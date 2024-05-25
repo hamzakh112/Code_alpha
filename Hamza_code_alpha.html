@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #center {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h4 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="date"] {
+            width: calc(100% - 20px); /* Subtract padding */
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            margin-top: 20px;
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="center">
+        <h4>Welcome to the Age Calculator</h4>
+        <label for="birthdate">Enter your birth date:</label>
+        <input type="date" id="birthdate">
+        <br>
+        <button onclick="showAge()">Calculate Your Age</button>
+        <p id="ageDisplay"></p>
+    </div>
+
+    <script>
+        function calculateAge(birthdate) {
+            let currentDate = new Date();
+            let currentYear = currentDate.getFullYear();
+            let currentMonth = currentDate.getMonth();
+            let currentDay = currentDate.getDate();
+
+            let birthYear = birthdate.getFullYear();
+            let birthMonth = birthdate.getMonth();
+            let birthDay = birthdate.getDate();
+
+            let ageYears = currentYear - birthYear;
+            let ageMonths = currentMonth - birthMonth;
+            let ageDays = currentDay - birthDay;
+
+            // Check if the birthdate is in the future
+            if (birthdate > currentDate) {
+                return null; // Return null if birthdate is in the future
+            }
+
+            // Adjust for negative month difference
+            if (ageMonths < 0) {
+                ageYears--;
+                ageMonths += 12;
+            }
+
+            // Adjust for negative day difference
+            if (ageDays < 0) {
+                ageMonths--;
+                if (ageMonths < 0) {
+                    ageYears--;
+                    ageMonths += 12;
+                }
+                let lastMonth = new Date(currentYear, currentMonth, 0);
+                ageDays += lastMonth.getDate();
+            }
+
+            return {
+                years: ageYears,
+                months: ageMonths,
+                days: ageDays
+            };
+        }
+
+        function showAge() {
+            let birthDateInput = document.getElementById("birthdate").value;
+            if (birthDateInput) {
+                let birthdate = new Date(birthDateInput);
+                if (birthdate > new Date()) {
+                    alert("Please enter a birth date that has already occurred.");
+                    return;
+                }
+                let age = calculateAge(birthdate);
+                if (age !== null) {
+                    document.getElementById("ageDisplay").textContent = "Your age is: " + age.years + " years " + age.months + " months " + age.days + " days";
+                } else {
+                    document.getElementById("ageDisplay").textContent = ""; // Clear previous age display
+                }
+            } else {
+                document.getElementById("ageDisplay").textContent = "Please enter your birth date.";
+            }
+        }
+    </script>
+</body>
+</html>
